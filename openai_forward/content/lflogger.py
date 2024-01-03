@@ -176,6 +176,7 @@ class LangfuseLogger:
         info, _ = await self.parse_payload(request)
         trace = self.langfuse.trace(
             id=uid,
+            name='chat.completion',
         )
         metadata = info.copy()
         metadata.pop('messages')
@@ -191,7 +192,10 @@ class LangfuseLogger:
     def end(self, uid, result):
         trace, generation = self.traces[uid]
         logger.info(result)
-        generation.end(output=result['assistant'])
+        generation.end(output=result['assistant'], 
+                       usage={"input": result['usage']['prompt_tokens'], 
+                              "output": result['usage']['completion_tokens'], 
+                              "unit": "TOKENS"},)
         trace.update(output=result['assistant'])
         self.langfuse.flush()
 
