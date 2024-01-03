@@ -241,8 +241,8 @@ class OpenaiForward(GenericForward):
             logger_instance = lfLogger
 
             # If a logger method is determined, parse payload and log if necessary
-            if logger_instance:
-                payload_log_info, payload = await logger_instance.parse_payload(request)
+            payload_log_info, payload = await logger_instance.parse_payload(request)
+            print(payload_log_info)
 
         except Exception as e:
             logger.warning(
@@ -441,6 +441,7 @@ class OpenaiForward(GenericForward):
         if valid_payload:
             await lfLogger.start(uid, request)
         else:
+            logger.warning(payload_info)
             logger.warning(f"uid: {uid} >>>>> [invalid payload]")
         cached_response, cache_key = self._get_cached_response(
             payload_info, valid_payload, request
