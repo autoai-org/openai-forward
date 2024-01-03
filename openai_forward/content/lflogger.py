@@ -197,9 +197,14 @@ class LangfuseLogger:
                               "unit": "TOKENS"}
             generation.end(
                 output=result['assistant'], 
-                       usage=usage)
+                usage=usage
+            )
         else:
-            generation.end(output=result['assistant'])
+            generation.end(output=result['assistant'], usage={
+                "input": 0,
+                "output": 0,
+                "unit": "TOKENS"
+            })
         trace.update(output=result['assistant'])
         self.langfuse.flush()
 
