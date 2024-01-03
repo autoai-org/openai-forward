@@ -34,6 +34,7 @@ dependencies = [
     "tiktoken>=0.5.1",
     "tomli",
     "tomli-w",
+    "langfuse",
 ]
 
 dynamic = ["version"]

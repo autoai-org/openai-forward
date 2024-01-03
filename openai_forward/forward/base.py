@@ -19,7 +19,7 @@ from ..cache.database import db_dict
 from ..content.openai import ChatLogger, CompletionLogger, WhisperLogger
 from ..decorators import async_retry, async_token_rate_limit
 from ..settings import *
-
+from ..content.lflogger import lfLogger
 
 class GenericForward:
     """
@@ -205,31 +205,11 @@ class OpenaiForward(GenericForward):
         result_info = {}
 
         # If not configured to log or print chat, or the method is not POST, return early
-        if not (LOG_CHAT or PRINT_CHAT) or request_method != "POST":
-            return result_info
-
         try:
             # Determine which logger and method to use based on the route_path
-            logger_instance = None
-            if route_path == CHAT_COMPLETION_ROUTE:
-                logger_instance = self.chat_logger
-            elif route_path == COMPLETION_ROUTE:
-                logger_instance = self.completion_logger
-            elif route_path.startswith("/v1/audio/"):
-                self.whisper_logger.log_buffer(buffer)
-                return result_info
-
-            # If a logger method is determined, parse bytearray and log if necessary
-            if logger_instance:
-                result_info = logger_instance.parse_bytearray(buffer)
-                result_info["uid"] = uid
-
-                if LOG_CHAT:
-                    logger_instance.log(result_info)
-
-                if PRINT_CHAT and logger_instance == self.chat_logger:
-                    self.chat_logger.print_chat_info(result_info)
-
+            result_info = lfLogger.parse_bytearray(buffer)
+            result_info["uid"] = uid
+            lfLogger.end(uid, result_info)
         except Exception:
             logger.warning(f"log result error:\n{traceback.format_exc()}")
 
@@ -474,7 +454,7 @@ class OpenaiForward(GenericForward):
             request, url_path
         )
         uid = payload_info["uid"]
-
+        await lfLogger.start(uid, request)
         cached_response, cache_key = self._get_cached_response(
             payload_info, valid_payload, request
         )
