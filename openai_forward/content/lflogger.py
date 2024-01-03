@@ -154,6 +154,7 @@ class LangfuseLogger:
                 usage = None
                 delta_content = line_dict["choices"][0]["delta"][parse_key]
                 finish_reason = line_dict["choices"][0]['finish_reason']
+                logger.info(line_dict)
                 if finish_reason == "stop":
                     usage = line_dict['usage']
                 return delta_content, usage
@@ -164,10 +165,10 @@ class LangfuseLogger:
                 logger.error(f"Unknown parse key: {parse_key}")
                 return "", None
         except JSONDecodeError:
-            logger.info(f"JSONDecodeError: {line}")
             return "", None
-        except KeyError:
+        except KeyError as e:
             logger.info(f"KeyError: {line}")
+            logger.info(e)
             return "", None
     
     async def start(self, uid, request: Request):
