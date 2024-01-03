@@ -232,7 +232,7 @@ class OpenaiForward(GenericForward):
         """
         payload_log_info = {"uid": None}
 
-        if not (LOG_CHAT or PRINT_CHAT) or request.method != "POST":
+        if request.method != "POST":
             payload = await request.body()
             return False, payload_log_info, payload
 
