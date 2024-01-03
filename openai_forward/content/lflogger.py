@@ -152,11 +152,12 @@ class LangfuseLogger:
             line_dict = orjson.loads(line)
             if parse_key == "content":
                 usage = None
-                delta_content = line_dict["choices"][0]["delta"][parse_key]
                 finish_reason = line_dict["choices"][0]['finish_reason']
-                logger.info(line_dict)
                 if finish_reason == "stop":
                     usage = line_dict['usage']
+                    delta_content = ""
+                else:
+                    delta_content = line_dict["choices"][0]["delta"][parse_key]
                 return delta_content, usage
             elif parse_key == "tool_calls":
                 tool_calls = line_dict["choices"][0]["delta"]["tool_calls"]
