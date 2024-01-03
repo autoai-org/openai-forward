@@ -95,7 +95,6 @@ class LangfuseLogger:
         target_info["id"] = first_dict["id"]
         target_info["model"] = first_dict["model"]
         target_info["role"] = msg["role"]
-        target_info["usage"] = first_dict.get("usage")
         role = msg["role"]  # always be "assistant"
         content, tool_calls = msg.get("content"), msg.get("tool_calls")
         if tool_calls:
@@ -129,6 +128,7 @@ class LangfuseLogger:
                 stream_content += delta_content
                 if usage:
                     target_info["usage"] = usage
+                    print(target_info)
         if target_info['is_tool_calls']:
             tool_calls[0]['function']['arguments'] = stream_content
             target_info[role] = tool_calls
