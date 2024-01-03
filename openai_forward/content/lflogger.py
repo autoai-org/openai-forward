@@ -159,14 +159,14 @@ class LangfuseLogger:
                 return delta_content, usage
             elif parse_key == "tool_calls":
                 tool_calls = line_dict["choices"][0]["delta"]["tool_calls"]
-                return tool_calls[0]["function"]['arguments']
+                return tool_calls[0]["function"]['arguments'], None
             else:
                 logger.error(f"Unknown parse key: {parse_key}")
-                return ""
+                return "", None
         except JSONDecodeError:
-            return ""
+            return "", None
         except KeyError:
-            return ""
+            return "", None
     
     async def start(self, uid, request: Request):
         info, _ = await self.parse_payload(request)
