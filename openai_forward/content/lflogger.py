@@ -128,7 +128,7 @@ class LangfuseLogger:
                 stream_content += delta_content
                 if usage:
                     target_info["usage"] = usage
-                    print(target_info)
+                    logger.info(target_info)
         if target_info['is_tool_calls']:
             tool_calls[0]['function']['arguments'] = stream_content
             target_info[role] = tool_calls
@@ -164,8 +164,10 @@ class LangfuseLogger:
                 logger.error(f"Unknown parse key: {parse_key}")
                 return "", None
         except JSONDecodeError:
+            logger.info(f"JSONDecodeError: {line}")
             return "", None
         except KeyError:
+            logger.info(f"KeyError: {line}")
             return "", None
     
     async def start(self, uid, request: Request):
