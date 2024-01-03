@@ -249,7 +249,7 @@ class OpenaiForward(GenericForward):
                 f"log chat error:\nhost:{request.client.host} method:{request.method}: {traceback.format_exc()}"
             )
             payload = await request.body()
-        print(payload_log_info)
+        logger.info(payload_log_info)
         valid = True if payload_log_info['uid'] is not None else False
         return valid, payload_log_info, payload
 
