@@ -176,7 +176,7 @@ class LangfuseLogger:
         )
         self.traces[uid] = (trace, generation)
         
-    async def end(self, uid, result):
+    def end(self, uid, result):
         trace, generation = self.traces[uid]
         generation.end(output=result['assistant'])
         trace.update(output=result['assistant'])

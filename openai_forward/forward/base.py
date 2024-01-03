@@ -456,6 +456,8 @@ class OpenaiForward(GenericForward):
         uid = payload_info["uid"]
         if valid_payload:
             await lfLogger.start(uid, request)
+        else:
+            logger.warning(f"uid: {uid} >>>>> [invalid payload]")
         cached_response, cache_key = self._get_cached_response(
             payload_info, valid_payload, request
         )
