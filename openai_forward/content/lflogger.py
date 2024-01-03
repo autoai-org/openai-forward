@@ -126,7 +126,6 @@ class LangfuseLogger:
                 stream_content += self._parse_one_line_content(
                     line[start_token_len:], parse_content_key
                 )
-        print(stream_content)
         if target_info['is_tool_calls']:
             tool_calls[0]['function']['arguments'] = stream_content
             target_info[role] = tool_calls
@@ -148,6 +147,7 @@ class LangfuseLogger:
         """
         try:
             line_dict = orjson.loads(line)
+            print(line_dict)
             if parse_key == "content":
                 return line_dict["choices"][0]["delta"][parse_key]
             elif parse_key == "tool_calls":
