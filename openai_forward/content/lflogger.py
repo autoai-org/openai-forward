@@ -164,15 +164,15 @@ class LangfuseLogger:
             return ""
     
     async def start(self, uid, request: Request):
-        self.info = await self.parse_payload(request)
+        info, _ = await self.parse_payload(request)
         trace = self.langfuse.trace(
             id=uid,
         )
         generation = trace.generation(
             id=uid,
-            input=self.info['messages'],
-            model = self.info['model'],
-            metadata=self.info
+            input=info['messages'],
+            model = info['model'],
+            metadata=info
         )
         self.traces[uid] = (trace, generation)
         

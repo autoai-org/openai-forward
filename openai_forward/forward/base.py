@@ -454,7 +454,8 @@ class OpenaiForward(GenericForward):
             request, url_path
         )
         uid = payload_info["uid"]
-        await lfLogger.start(uid, request)
+        if valid_payload:
+            await lfLogger.start(uid, request)
         cached_response, cache_key = self._get_cached_response(
             payload_info, valid_payload, request
         )
