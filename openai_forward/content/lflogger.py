@@ -180,5 +180,6 @@ class LangfuseLogger:
         trace, generation = self.traces[uid]
         generation.end(output=result['assistant'])
         trace.update(output=result['assistant'])
-
+        self.langfuse.flush()
+        
 lfLogger = LangfuseLogger()
