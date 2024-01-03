@@ -191,11 +191,15 @@ class LangfuseLogger:
         
     def end(self, uid, result):
         trace, generation = self.traces[uid]
-        logger.info(result)
-        generation.end(output=result['assistant'], 
-                       usage={"input": result['usage']['prompt_tokens'], 
+        if 'usage' in result:
+            usage = {"input": result['usage']['prompt_tokens'], 
                               "output": result['usage']['completion_tokens'], 
-                              "unit": "TOKENS"},)
+                              "unit": "TOKENS"}
+            generation.end(
+                output=result['assistant'], 
+                       usage=usage)
+        else:
+            generation.end(output=result['assistant'])
         trace.update(output=result['assistant'])
         self.langfuse.flush()
 
