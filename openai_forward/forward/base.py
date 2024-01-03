@@ -238,27 +238,11 @@ class OpenaiForward(GenericForward):
 
         try:
             # Determine which logger and method to use based on the url_path
-            logger_instance = None
-            if url_path == CHAT_COMPLETION_ROUTE:
-                logger_instance = self.chat_logger
-            elif url_path == COMPLETION_ROUTE:
-                logger_instance = self.completion_logger
+            logger_instance = lfLogger
 
             # If a logger method is determined, parse payload and log if necessary
             if logger_instance:
                 payload_log_info, payload = await logger_instance.parse_payload(request)
-
-                if payload_log_info and LOG_CHAT:
-                    logger_instance.log(payload_log_info)
-
-                if (
-                    payload_log_info
-                    and PRINT_CHAT
-                    and logger_instance == self.chat_logger
-                ):
-                    self.chat_logger.print_chat_info(payload_log_info)
-            else:
-                payload = await request.body()
 
         except Exception as e:
             logger.warning(
