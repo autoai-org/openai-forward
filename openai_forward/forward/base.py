@@ -242,14 +242,12 @@ class OpenaiForward(GenericForward):
 
             # If a logger method is determined, parse payload and log if necessary
             payload_log_info, payload = await logger_instance.parse_payload(request)
-            print(payload_log_info)
 
         except Exception as e:
             logger.warning(
                 f"log chat error:\nhost:{request.client.host} method:{request.method}: {traceback.format_exc()}"
             )
             payload = await request.body()
-        logger.info(payload_log_info)
         valid = True if payload_log_info['uid'] is not None else False
         return valid, payload_log_info, payload
 

@@ -92,13 +92,13 @@ class LangfuseLogger:
 
         target_info = dict()
         verbose = False
-        if verbose:
-            target_info["created"] = first_dict["created"]
-            target_info["id"] = first_dict["id"]
-            target_info["model"] = first_dict["model"]
-            target_info["role"] = msg["role"]
+        target_info["created"] = first_dict["created"]
+        target_info["id"] = first_dict["id"]
+        target_info["model"] = first_dict["model"]
+        target_info["role"] = msg["role"]
+        target_info["usage"] = first_dict.get("usage")
         role = msg["role"]  # always be "assistant"
-
+        logger.info(target_info)
         content, tool_calls = msg.get("content"), msg.get("tool_calls")
         if tool_calls:
             """
@@ -113,7 +113,6 @@ class LangfuseLogger:
             target_info[role] = tool_calls
             target_info["is_tool_calls"] = True
             parse_content_key = "tool_calls"
-
         else:
             target_info[role] = content
             target_info["is_tool_calls"] = False
@@ -168,18 +167,22 @@ class LangfuseLogger:
         trace = self.langfuse.trace(
             id=uid,
         )
+        metadata = info.copy()
+        metadata.pop('messages')
         generation = trace.generation(
             id=uid,
+            name='chat.completion',
             input=info['messages'],
             model = info['model'],
-            metadata=info
+            metadata=metadata
         )
         self.traces[uid] = (trace, generation)
         
     def end(self, uid, result):
         trace, generation = self.traces[uid]
+        logger.info(result)
         generation.end(output=result['assistant'])
         trace.update(output=result['assistant'])
         self.langfuse.flush()
-        
+
 lfLogger = LangfuseLogger()
