@@ -91,14 +91,12 @@ class LangfuseLogger:
             msg = first_dict["choices"][0]["message"]
 
         target_info = dict()
-        verbose = False
         target_info["created"] = first_dict["created"]
         target_info["id"] = first_dict["id"]
         target_info["model"] = first_dict["model"]
         target_info["role"] = msg["role"]
         target_info["usage"] = first_dict.get("usage")
         role = msg["role"]  # always be "assistant"
-        logger.info(target_info)
         content, tool_calls = msg.get("content"), msg.get("tool_calls")
         if tool_calls:
             """
@@ -128,6 +126,7 @@ class LangfuseLogger:
                 stream_content += self._parse_one_line_content(
                     line[start_token_len:], parse_content_key
                 )
+        print(stream_content)
         if target_info['is_tool_calls']:
             tool_calls[0]['function']['arguments'] = stream_content
             target_info[role] = tool_calls
